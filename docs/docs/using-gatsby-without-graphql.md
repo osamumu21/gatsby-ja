@@ -1,16 +1,16 @@
 ---
-title: Gatsby without GraphQL
+title: GatsbyでGraphQLを使わない
 ---
 
-Most examples in the Gatsby docs and on the web at large focus on leveraging source plugins to manage your data in Gatsby sites. However, source plugins (or even Gatsby nodes) aren't strictly necessary to pull data into a Gatsby site! It's also possible to use an “unstructured data” approach in Gatsby sites, no GraphQL required.
+たいていの Gatsby に関するドキュメントや web 上の例では、データ取得プラグインをいかに活用してサイトのデータを管理するかというところにフォーカスしていると思います。 でも、Gatsby にデータを取り込むためにデータ取得プラグイン（や Gatsby ノード）は、必ずしも必要ないのです！GraphQL を使わなくとも Gatsby だけで外部データを取り扱えます。
 
-> Note: For our purposes here, “unstructured data” means data “handled outside of Gatsby’s data layer” (we’re using the data directly, and not transforming the data into Gatsby nodes).
+> 注意: ここでは、 “非構造データ”を “Gatsby データ層の外で加工された”データのことを意味します (Gatsby ノードに変換せずに直接取得されたデータを使います)
 
-## The approach: fetch data and use Gatsby's `createPages` API
+## アプローチ: Gatsby の `createPages` API を使いデータを取得する
 
-> _Note_: This example is drawn from an example repo built specifically to model how to use this "unstructured data" approach. [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
+> _注意_: 下記サンプルコードは、 ここでいう”非構造化データ”をどのように取り扱うかアプローチとして作られたリポジトリです。 [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
 
-In your Gatsby project's `gatsby-node.js` file, fetch the needed data, and supply it to the `createPage` action within the `createPages` API:
+Gatsby のプロジェクト内の `gatsby-node.js` ファイルの中に、 必要なデータを取得して `createPages` API の中の`createPage`Action にセットしてください。
 
 ```javascript:title=gatsby-node.js
 exports.createPages = async ({ actions: { createPage } }) => {
@@ -35,10 +35,10 @@ exports.createPages = async ({ actions: { createPage } }) => {
 }
 ```
 
-- `createPages` is a [Gatsby Node API](/docs/node-apis/#createPages). It hooks into a certain point in [Gatsby's bootstrap sequence](/docs/gatsby-lifecycle-apis/#bootstrap-sequence).
-- The [`createPage` action](/docs/actions/#createPage) is what actually creates the page.
+- `createPages` は [Gatsby Node API]です。(/docs/node-apis/#createPages). [Gatsby の起動手順]の中で読み込まれます。(/docs/gatsby-lifecycle-apis/#bootstrap-sequence).
+- [`createPage` アクション](/docs/actions/#createPage) 実際のページをものです。
 
-On the highlighted lines, the data is being supplied to the page template, where it can be accessed as props:
+ハイライトした行でデータは props としてアクセスできるところにページのテンプレートに埋め込まれます。
 
 ```jsx:title=/src/templates/pokemon.js
 // highlight-next-line
@@ -65,44 +65,45 @@ export default ({ pageContext: { pokemon } }) => (
 )
 ```
 
-## When might using "unstructured data" make sense?
+## どのような時に "非構造化データ"アプローチを用いるとよいでしょうか？
 
-You may find this approach useful when using Gatsby's data layer feels a bit too heavy-handed for your project scope.
+データ層を用いることがプロジェクトの規模に対して大げさと感じた時にこのアプローチを検討すると良いかもしれません。
 
-## The pros of using unstructured data
+## 非構造化データアプローチのよいところ
 
-- The approach is familiar and comfortable, especially if you’re new to GraphQL
-- There’s no intermediate step: you fetch some data, then build pages with it
+- 馴染みやすくとっつきやすい：GraphQL に慣れていない場合は特に、このアプローチは馴染みやすいかもしれません
+- 余計な処理がない：取得したデータをストレートに渡し画面を生成します
 
-## The tradeoffs of foregoing Gatsby's data layer
+## データ層を導入することで得られること
 
-Using Gatsby's data layer provides the following benefits:
+一方でデータ層を導入すると下記のようなメリットがあります。
 
-- Enables you to declaratively specify what data a page component needs, alongside the page component
-- Eliminates frontend data boilerplate — no need to worry about requesting & waiting for data. Just ask for the data you need with a GraphQL query and it’ll show up when you need it
-- Pushes frontend complexity into queries — many data transformations can be done at build-time within your GraphQL queries
-- It’s the perfect data querying language for the often complex/nested data dependencies of modern applications
-- Improves performance by removing data bloat — GraphQL is a big part of why Gatsby is so fast as it enables lazy-loading the exact data in the exact form each view needs
-- Enables you to take advantage of hot reloading when developing; For example, in this post's example "Pokémon" site, if you wanted to add a "see other pokémon" section to the pokémon detail view, you would need to change your `gatsby-node.js` to pass all pokémon to the page, and restart the dev server. In contrast, when using queries, you can add a query and it will hot reload.
+- コンポーネント自体に必要なデータを宣言的に記述できます。
+- フロントエンド側のデータ取得に関する同じようなコードを記述することを排除する。 — データの問い合わせと待ち時間を気にする必要がない。 GraphQL クエリに必要なデータを問い合わせるだけで必要となった時に表示されます。
+- フロントエンドの複雑な部分をクエリに追いやることができます。 — たいていのデータ加工は GraphQL クエリのビルド時に終えることができます。
+- 階層の入り組んだ複雑なデータを扱うモダンなアプリケーションにとっては完璧なデータクエリ言語です。
+- データ bloat をなくすことでパフォーマンスを改善します。 — GraphQL は Gatsby がそれぞれのビューで必要とされるデータを遅延ロード可能にすることによって Gatsby が速い理由です。
+- 開発環境でのホットリローディングを可能にします。 "ポケモン"の web サイトの例でいうと、「他のポケモンをみる」機能を詳細ページに追加したい時、`gatsby-node.js`はすべてのポケモンをページに読み込まなければならない。さらに環境サーバのリスタートが必要です。 対してクエリを利用するとクエリが追加できホットロードされます。
 
-> Learn more about [GraphQL in Gatsby](/docs/querying-with-graphql/).
+> より深く [GraphQL](/docs/querying-with-graphql/)を知りたい時。
 
 Working outside of the data layer also means foregoing the optimizations provided by transformer plugins, like:
+データ層の外側で処理をすることによってトランスフォーマープラグインで提供されるような最適化が得られます。
 
 - [`gatsby-image`](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-image) (speedy optimized images),
-- [`gatsby-transformer-sharp`](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-transformer-sharp) (provides queryable fields for processing your images in a variety of ways including resizing, cropping, and creating responsive images),
-- ... the whole Gatsby ecosystem of official and community-created [transformer plugins](/plugins/?=transformer).
+- [`gatsby-transformer-sharp`](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-transformer-sharp)（リサイズ、切り取り、レスポンシブな画像の生成といったいろいろな方法で画像処理をするためのクエリ可能なフィールドを提供します）
+- Gatsby エコシステムのすべての公式のコミュニティーが作成した[トランスフォーマープラグイン](/plugins/?=transformer)など
 
 Another difficulty added when working with unstructured data is that your data fetching code becomes increasingly hairy when you source directly from multiple locations.
 
-## The Gatsby recommendation
+## Gatsby からのお薦め
 
-If you're building a small site, one efficient way to build it is to pull in unstructured data as outlined in this guide, using `createPages` API, and then if the site becomes more complex later on, you move on to building more complex sites, or you'd like to transform your data, follow these steps:
+もしあなたが作ろうと考えているサイトの規模が小さいものでしたら、サイトを生成するために効率の良い方法の 1 つはこのガイドのアウトラインのように`createPages` API を使って非構造データにひっぱりこむことです。それからもしサイトが後々複雑化していった時やより複雑なサイトの構築やデータを加工したくなった場合下記のような手順を実施ください。
 
-1.  Check out the [Plugin Library](/plugins/) to see if the source plugins and/or transformer plugins you'd like to use already exist
-2.  If they don't exist, read the [Plugin Authoring](/docs/creating-plugins/) guide and consider building your own!
+1.  ほしいソース取得プラグインとトランスフォームプラグインが[Plugin Library](/plugins/)存在するかを確認ください。
+2.  もしなければこちら[Plugin Authoring](/docs/creating-plugins/)をお読みいただきご自身で作ることをご検討ください！
 
-## Further reading
+## 参考
 
 - Amberley Romo's guide to [using Gatsby without GraphQL](/blog/2018-10-25-using-gatsby-without-graphql/)
 - [Why Gatsby Uses GraphQL](/docs/why-gatsby-uses-graphql/)
