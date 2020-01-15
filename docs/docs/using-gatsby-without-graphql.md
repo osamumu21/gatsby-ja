@@ -1,16 +1,16 @@
 ---
-title: Gatsby without GraphQL
+title: GraphQLを使わないGatsby
 ---
 
-Most examples in the Gatsby docs and on the web at large focus on leveraging source plugins to manage your data in Gatsby sites. However, source plugins (or even Gatsby nodes) aren't strictly necessary to pull data into a Gatsby site! It's also possible to use an “unstructured data” approach in Gatsby sites, no GraphQL required.
+たいていの Gatsby に関するドキュメントや web 上の例では、Gatsby 製サイトのデータを管理するためにレバレッジのきいた（効率いい）プラグインにフォーカスしていると思います。 でも、Gatsby にデータを取り込むためにソースプラグイン（や Gatsby nodes）は、必ずしも必要ないのです！　また、 Gatsby 製のサイトの中の unstructured data アプローチを可能とします。GraphQL は必要ありません。
 
-> Note: For our purposes here, “unstructured data” means data “handled outside of Gatsby’s data layer” (we’re using the data directly, and not transforming the data into Gatsby nodes).
+> 注意: ここでの目的として, “非構造データ”は “Gatsby データ層の外から操作された”データを意味します (直接データを操作し, and not transforming the data into Gatsby nodes)
 
-## The approach: fetch data and use Gatsby's `createPages` API
+## The approach: データを取得し Gatsby の `createPages` API を使う
 
-> _Note_: This example is drawn from an example repo built specifically to model how to use this "unstructured data" approach. [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
+> _注意_: この例では is drawn from an example repo built specifically to model how to use this "unstructured data" approach. [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
 
-In your Gatsby project's `gatsby-node.js` file, fetch the needed data, and supply it to the `createPage` action within the `createPages` API:
+Gatsby のプロジェクト内の `gatsby-node.js` ファイルの中に、 必要なデータを取得して `createPages` API の中の`createPage`Action にセットしてください。
 
 ```javascript:title=gatsby-node.js
 exports.createPages = async ({ actions: { createPage } }) => {
@@ -65,11 +65,11 @@ export default ({ pageContext: { pokemon } }) => (
 )
 ```
 
-## When might using "unstructured data" make sense?
+## どのような時に "unstructured data" をつかうとよいでしょうか？
 
-You may find this approach useful when using Gatsby's data layer feels a bit too heavy-handed for your project scope.
+プロジェクトの規模に対して大きすぎると感じた時に Gatsby のデータ層を使うアプローチをとることは良いかもしれません。
 
-## The pros of using unstructured data
+## unstructured data を使うといいところ
 
 - The approach is familiar and comfortable, especially if you’re new to GraphQL
 - There’s no intermediate step: you fetch some data, then build pages with it
