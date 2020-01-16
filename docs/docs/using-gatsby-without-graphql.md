@@ -2,13 +2,13 @@
 title: GraphQLを使わないGatsby
 ---
 
-たいていの Gatsby に関するドキュメントや web 上の例では、Gatsby 製サイトのデータを管理するためにレバレッジのきいた（効率いい）プラグインにフォーカスしていると思います。 でも、Gatsby にデータを取り込むためにソースプラグイン（や Gatsby nodes）は、必ずしも必要ないのです！　また、 Gatsby 製のサイトの中の unstructured data アプローチを可能とします。GraphQL は必要ありません。
+たいていの Gatsby に関するドキュメントや web 上の例では、Gatsby 製サイトのデータを管理するためにレバレッジのきいた（効率いい）プラグインにフォーカスしていると思います。 でも、Gatsby にデータを取り込むためにソースプラグイン（や Gatsby nodes）は、必ずしも必要ないのです！　また、 Gatsby 製のサイトの中の 非構造化データ アプローチを可能とします。GraphQL は必要ありません。
 
 > 注意: ここでの目的として, “非構造データ”は “Gatsby データ層の外から操作された”データを意味します (直接データを操作し, and not transforming the data into Gatsby nodes)
 
-## The approach: データを取得し Gatsby の `createPages` API を使う
+## アプローチ: データを取得し Gatsby の `createPages` API を使う
 
-> _注意_: この例では is drawn from an example repo built specifically to model how to use this "unstructured data" approach. [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
+> _注意_: この例では どのように非構造化データを利用するアプローチのモデルとして作られたサンプルリポジトリです。 [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
 
 Gatsby のプロジェクト内の `gatsby-node.js` ファイルの中に、 必要なデータを取得して `createPages` API の中の`createPage`Action にセットしてください。
 
@@ -35,10 +35,10 @@ exports.createPages = async ({ actions: { createPage } }) => {
 }
 ```
 
-- `createPages` is a [Gatsby Node API](/docs/node-apis/#createPages). It hooks into a certain point in [Gatsby's bootstrap sequence](/docs/gatsby-lifecycle-apis/#bootstrap-sequence).
-- The [`createPage` action](/docs/actions/#createPage) is what actually creates the page.
+- `createPages` は [Gatsby Node API]です。(/docs/node-apis/#createPages). [Gatsby の起動手順]の中で読み込まれます。(/docs/gatsby-lifecycle-apis/#bootstrap-sequence).
+- [`createPage` アクション](/docs/actions/#createPage) 実際のページをものです。
 
-On the highlighted lines, the data is being supplied to the page template, where it can be accessed as props:
+ハイライトした行でデータは props としてアクセスできるところにページのテンプレートに埋め込まれます。
 
 ```jsx:title=/src/templates/pokemon.js
 // highlight-next-line
@@ -65,27 +65,27 @@ export default ({ pageContext: { pokemon } }) => (
 )
 ```
 
-## どのような時に "unstructured data" をつかうとよいでしょうか？
+## どのような時に "非構造化データ" をつかうとよいでしょうか？
 
 プロジェクトの規模に対して大きすぎると感じた時に Gatsby のデータ層を使うアプローチをとることは良いかもしれません。
 
-## unstructured data を使うといいところ
+## 非構造化データを使うといいところ
 
 - The approach is familiar and comfortable, especially if you’re new to GraphQL
 - There’s no intermediate step: you fetch some data, then build pages with it
 
-## The tradeoffs of foregoing Gatsby's data layer
+## Gatsby のデータ層を推し進めることのトレードオフ
 
-Using Gatsby's data layer provides the following benefits:
+Gatsby のデータ層を使うこと下記のようなメリットがあります。
 
-- Enables you to declaratively specify what data a page component needs, alongside the page component
-- Eliminates frontend data boilerplate — no need to worry about requesting & waiting for data. Just ask for the data you need with a GraphQL query and it’ll show up when you need it
-- Pushes frontend complexity into queries — many data transformations can be done at build-time within your GraphQL queries
-- It’s the perfect data querying language for the often complex/nested data dependencies of modern applications
-- Improves performance by removing data bloat — GraphQL is a big part of why Gatsby is so fast as it enables lazy-loading the exact data in the exact form each view needs
-- Enables you to take advantage of hot reloading when developing; For example, in this post's example "Pokémon" site, if you wanted to add a "see other pokémon" section to the pokémon detail view, you would need to change your `gatsby-node.js` to pass all pokémon to the page, and restart the dev server. In contrast, when using queries, you can add a query and it will hot reload.
+- どんなデータがコンポーネントに必要かを宣言的に特定することを可能にする。 alongside the page component
+- フロントエンドのデータのボイラープレートを排除する。 — データのリクエスト待ちを気にする必要がない。 GraphQL クエリに必要なデータをきくだけで必要なとこに表示されます。
+- フロントエンドの複雑な部分をクエリにまとめることができます。 — たいていのデータ加工は GraphQL クエリ野中の at build-time で終えることができます。
+- 階層の入り組んだ複雑なデータに依存するようなモダンなアプリケーションにとって完璧なデータクエリ言語です。
+- データ bloat をなくすことでパフォーマンスを改善します。 — GraphQL は Gatsby がそれぞれのビューで必要とされるデータを遅延ロード可能にすることによって Gatsby が速い理由です。
+- 開発環境でのホットリローディングを可能にします。 "ポケモン"の web サイトの例でいうと、「他のポケモンをみる」機能を詳細ページに追加したい時、`gatsby-node.js`はすべてのポケモンをページに読み込まなければならない。さらに環境サーバのリスタートが必要です。 対してクエリを利用するとクエリが追加できホットロードされます。
 
-> Learn more about [GraphQL in Gatsby](/docs/querying-with-graphql/).
+> より深く [GraphQL](/docs/querying-with-graphql/)を知りたい時。
 
 Working outside of the data layer also means foregoing the optimizations provided by transformer plugins, like:
 
@@ -102,7 +102,7 @@ If you're building a small site, one efficient way to build it is to pull in uns
 1.  Check out the [Plugin Library](/plugins/) to see if the source plugins and/or transformer plugins you'd like to use already exist
 2.  If they don't exist, read the [Plugin Authoring](/docs/creating-plugins/) guide and consider building your own!
 
-## Further reading
+## 参考
 
 - Amberley Romo's guide to [using Gatsby without GraphQL](/blog/2018-10-25-using-gatsby-without-graphql/)
 - [Why Gatsby Uses GraphQL](/docs/why-gatsby-uses-graphql/)
