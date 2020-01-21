@@ -1,14 +1,14 @@
 ---
-title: GraphQLを使わないGatsby
+title: GatsbyでGraphQLを使わない
 ---
 
-たいていの Gatsby に関するドキュメントや web 上の例では、Gatsby 製サイトのデータを管理するためにレバレッジのきいた（効率いい）プラグインにフォーカスしていると思います。 でも、Gatsby にデータを取り込むためにソースプラグイン（や Gatsby nodes）は、必ずしも必要ないのです！　また、 Gatsby 製のサイトの中の 非構造化データ アプローチを可能とします。GraphQL は必要ありません。
+たいていの Gatsby に関するドキュメントや web 上の例では、データ取得プラグインをいかに活用してサイトのデータを管理するかというところにフォーカスしていると思います。 でも、Gatsby にデータを取り込むためにデータ取得プラグイン（や Gatsby ノード）は、必ずしも必要ないのです！GraphQL を使わなくとも Gatsby だけで外部データを取り扱えます。
 
-> 注意: ここでの目的として, “非構造データ”は “Gatsby データ層の外から操作された”データを意味します (直接データを操作し, and not transforming the data into Gatsby nodes)
+> 注意: ここでは、 “非構造データ”を “Gatsby データ層の外で加工された”データのことを意味します (Gatsby ノードに変換せずに直接取得されたデータを使います)
 
-## アプローチ: データを取得し Gatsby の `createPages` API を使う
+## アプローチ: Gatsby の `createPages` API を使いデータを取得する
 
-> _注意_: この例では どのように非構造化データを利用するアプローチのモデルとして作られたサンプルリポジトリです。 [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
+> _注意_: 下記サンプルコードは、 ここでいう”非構造化データ”をどのように取り扱うかアプローチとして作られたリポジトリです。 [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
 
 Gatsby のプロジェクト内の `gatsby-node.js` ファイルの中に、 必要なデータを取得して `createPages` API の中の`createPage`Action にセットしてください。
 
@@ -65,42 +65,43 @@ export default ({ pageContext: { pokemon } }) => (
 )
 ```
 
-## どのような時に "非構造化データ" をつかうとよいでしょうか？
+## どのような時に "非構造化データ"アプローチを用いるとよいでしょうか？
 
-プロジェクトの規模に対して大きすぎると感じた時に Gatsby のデータ層を使うアプローチをとることは良いかもしれません。
+データ層を用いることがプロジェクトの規模に対して大げさと感じた時にこのアプローチを検討すると良いかもしれません。
 
-## 非構造化データを使うといいところ
+## 非構造化データアプローチのよいところ
 
-- The approach is familiar and comfortable, especially if you’re new to GraphQL
-- There’s no intermediate step: you fetch some data, then build pages with it
+- 馴染みやすくとっつきやすい：GraphQL に慣れていない場合は特に、このアプローチは馴染みやすいかもしれません
+- 余計な処理がない：取得したデータをストレートに渡し画面を生成します
 
-## Gatsby のデータ層を推し進めることのトレードオフ
+## データ層を導入することで得られること
 
-Gatsby のデータ層を使うこと下記のようなメリットがあります。
+一方でデータ層を導入すると下記のようなメリットがあります。
 
-- どんなデータがコンポーネントに必要かを宣言的に特定することを可能にする。 alongside the page component
-- フロントエンドのデータのボイラープレートを排除する。 — データのリクエスト待ちを気にする必要がない。 GraphQL クエリに必要なデータをきくだけで必要なとこに表示されます。
-- フロントエンドの複雑な部分をクエリにまとめることができます。 — たいていのデータ加工は GraphQL クエリ野中の at build-time で終えることができます。
-- 階層の入り組んだ複雑なデータに依存するようなモダンなアプリケーションにとって完璧なデータクエリ言語です。
+- コンポーネント自体に必要なデータを宣言的に記述できます。
+- フロントエンド側のデータ取得に関する同じようなコードを記述することを排除する。 — データの問い合わせと待ち時間を気にする必要がない。 GraphQL クエリに必要なデータを問い合わせるだけで必要となった時に表示されます。
+- フロントエンドの複雑な部分をクエリに追いやることができます。 — たいていのデータ加工は GraphQL クエリのビルド時に終えることができます。
+- 階層の入り組んだ複雑なデータを扱うモダンなアプリケーションにとっては完璧なデータクエリ言語です。
 - データ bloat をなくすことでパフォーマンスを改善します。 — GraphQL は Gatsby がそれぞれのビューで必要とされるデータを遅延ロード可能にすることによって Gatsby が速い理由です。
 - 開発環境でのホットリローディングを可能にします。 "ポケモン"の web サイトの例でいうと、「他のポケモンをみる」機能を詳細ページに追加したい時、`gatsby-node.js`はすべてのポケモンをページに読み込まなければならない。さらに環境サーバのリスタートが必要です。 対してクエリを利用するとクエリが追加できホットロードされます。
 
 > より深く [GraphQL](/docs/querying-with-graphql/)を知りたい時。
 
 Working outside of the data layer also means foregoing the optimizations provided by transformer plugins, like:
+データ層の外側で処理をすることによってトランスフォーマープラグインで提供されるような最適化が得られます。
 
 - [`gatsby-image`](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-image) (speedy optimized images),
-- [`gatsby-transformer-sharp`](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-transformer-sharp) (provides queryable fields for processing your images in a variety of ways including resizing, cropping, and creating responsive images),
-- ... the whole Gatsby ecosystem of official and community-created [transformer plugins](/plugins/?=transformer).
+- [`gatsby-transformer-sharp`](https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-transformer-sharp)（リサイズ、切り取り、レスポンシブな画像の生成といったいろいろな方法で画像処理をするためのクエリ可能なフィールドを提供します）
+- Gatsby エコシステムのすべての公式のコミュニティーが作成した[トランスフォーマープラグイン](/plugins/?=transformer)など
 
 Another difficulty added when working with unstructured data is that your data fetching code becomes increasingly hairy when you source directly from multiple locations.
 
-## The Gatsby recommendation
+## Gatsby からのお薦め
 
-If you're building a small site, one efficient way to build it is to pull in unstructured data as outlined in this guide, using `createPages` API, and then if the site becomes more complex later on, you move on to building more complex sites, or you'd like to transform your data, follow these steps:
+もしあなたが作ろうと考えているサイトの規模が小さいものでしたら、サイトを生成するために効率の良い方法の 1 つはこのガイドのアウトラインのように`createPages` API を使って非構造データにひっぱりこむことです。それからもしサイトが後々複雑化していった時やより複雑なサイトの構築やデータを加工したくなった場合下記のような手順を実施ください。
 
-1.  Check out the [Plugin Library](/plugins/) to see if the source plugins and/or transformer plugins you'd like to use already exist
-2.  If they don't exist, read the [Plugin Authoring](/docs/creating-plugins/) guide and consider building your own!
+1.  ほしいソース取得プラグインとトランスフォームプラグインが[Plugin Library](/plugins/)存在するかを確認ください。
+2.  もしなければこちら[Plugin Authoring](/docs/creating-plugins/)をお読みいただきご自身で作ることをご検討ください！
 
 ## 参考
 
