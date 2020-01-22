@@ -1,5 +1,5 @@
 ---
-title: GraphQLを使わない
+title: GraphQLなしでGatsbyを使う
 ---
 
 たいていの Gatsby に関するドキュメントや web 上の例では、データ取得プラグインをいかに活用してサイトのデータを管理するかというところにフォーカスしていると思います。 でもデータを Gatsby に取り込むためのデータ取得プラグイン（や Gatsby ノード）は、必ずしも必要ないのです！GraphQL を使わなくとも Gatsby だけで外部データを取り扱えます。
@@ -8,9 +8,9 @@ title: GraphQLを使わない
 
 ## アプローチ: Gatsby の `createPages` API を使いデータを取得する
 
-> _注意_: 下記サンプルコードは、 ここでいう”非構造化データ”をどのように取り扱うかアプローチとして作られたリポジトリです。 [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
+> _注意_: 下記サンプルコードは、 ここでいう”非構造化データ”アプローチをどのように取り扱うかを確かめるために作られたリポジトリです。 [View the full repo on GitHub](https://github.com/jlengstorf/gatsby-with-unstructured-data).
 
-Gatsby のプロジェクト内の `gatsby-node.js` ファイルの中に、 必要なデータを取得して `createPages` API の中の`createPage`Action にセットしてください。
+Gatsby プロジェクト内の `gatsby-node.js` ファイルに、 必要なデータ取得元を `createPages` API の中の`createPage`Action に記述してください。
 
 ```javascript:title=gatsby-node.js
 exports.createPages = async ({ actions: { createPage } }) => {
@@ -79,7 +79,7 @@ export default ({ pageContext: { pokemon } }) => (
 一方でデータ層を導入すると下記のようなメリットがあります。
 
 - コンポーネント自体に必要なデータを宣言的に記述できます。
-- フロントエンド側のデータ取得に関する同じようなコードを記述することを排除する。 — データの問い合わせと待ち時間を気にする必要がない。 GraphQL クエリに必要なデータを問い合わせるだけで必要となった時に表示されます。
+- フロントエンド側のデータ取得に関する同じようなコードを記述することを排除する。 — データの問い合わせと待ち時間を気にする必要がありません。 GraphQL クエリに必要なデータを問い合わせるだけで必要となった時に表示されます。
 - フロントエンドの複雑な部分をクエリに追いやることができます。 — たいていのデータ加工は GraphQL クエリのビルド時に終えることができます。
 - 階層の入り組んだ複雑なデータを扱うモダンなアプリケーションにとっては完璧なデータクエリ言語です。
 - データの肥大化をなくすことでパフォーマンスを改善します。 — GraphQL によってビューで必要とされるデータを遅延読み込みしているため Gatsby は高速に動作します。
