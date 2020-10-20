@@ -4,10 +4,15 @@ title: Gatsby on Windows
 
 ## Setting up your environment for building native Node.js modules.
 
+## Node.js のネイティブモジュールを構築するための環境設定
+
 Many Gatsby plugins and themes require building native Node.js modules, e.g.
 [Sharp (a common Gatsby dependency used for image processing)](/packages/gatsby-plugin-sharp/).
 To do so, you need a functional build environment (Python and Visual C++ Build
 Tools).
+ほとんどの Gatsby プラグインやテーマは Node.js のネイティブモジュールを必要とします。
+
+そのためにビルド用の機能をインストールする環境が必要となります。（Python や Visual C++などのビルドツール）
 
 The recommended way to setup your build environment on Windows is to install the
 [`windows-build-tools`](https://github.com/felixrieseberg/windows-build-tools)
@@ -16,6 +21,8 @@ console. Upon installing this package, it downloads and installs Visual C++
 Build Tools 2015, provided free of charge by Microsoft. These tools are required
 to compile popular native modules. It will also install Python 2.7, configuring
 your machine and npm appropriately.
+
+Windows 環境を構築する方法として[`windows-build-tools`](https://github.com/felixrieseberg/windows-build-tools)パッケージをインストールすることをお薦めします。それらは `npm install windows-build-tools -g` PowerShell の管理者用コンソールから実行することでインストールされます。このパッケージがインストールされると Microsoft から無償で提供される Visual C++ Build Tools 2015 がダウンロードされます。これらのツールは一般的なネイティブモジュールをコンパイルする際に必要となります。さらにお使いのマシンの設定や npm を適切にするために Python2.7 がインストールされます。
 
 If your `windows-build-tools` installation stalls after Visual Studio Build Tools finishes, [this remedy](https://github.com/felixrieseberg/windows-build-tools/issues/47#issuecomment-296881488) might help.
 
